@@ -54,3 +54,14 @@ TEST(PlaneTests, find_higher_y) {
   // on boundary
   EXPECT_EQ(true, x.contains(1, {2, 4}, {3, 5}));
 }
+
+TEST(PlaneTests, search_cross) {
+  XXX x;
+
+  x.insert(1, 2, 13);
+  x.insert(1, 12, 3);
+
+  EXPECT_EQ(false, x.contains(1, {10, 15}, {10, 15}));
+  x.insert(1, 12, 13);
+  EXPECT_EQ(true, x.contains(1, {10, 15}, {10, 15}));
+}
