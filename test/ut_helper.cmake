@@ -36,8 +36,9 @@ function(yy_test)
 
   add_executable(${_NAME} "")
   target_sources(${_NAME} PRIVATE ${YY_TEST_SRCS})
-  target_link_libraries(${_NAME}
-    PUBLIC ${YY_TEST_DEPS}
+  target_link_libraries(${_NAME} PUBLIC 
+    ${YY_TEST_DEPS}
+    Threads::Threads
   )
   # Add all test executable to the unittest target folder.
   set_property(TARGET ${_NAME} PROPERTY FOLDER ${CMAKE_CURRENT_BINARY_DIR})
