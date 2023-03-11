@@ -13,6 +13,10 @@ target_include_directories(${PROJECT_NAME}_header INTERFACE
     ${PROJECT_SOURCE_DIR}/third-party
 )
 
+add_library(volume_allocation STATIC
+  src/volume_allocation/VolumeAllocation.cpp
+)
+
 add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE
