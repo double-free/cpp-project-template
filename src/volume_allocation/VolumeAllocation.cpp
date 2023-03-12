@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <numeric>
+#include <stdexcept>
 
 namespace algo {
 std::vector<Price> get_price_candidates(Price best_bid_price,
@@ -36,11 +36,11 @@ std::vector<Price> get_price_candidates(Price best_bid_price,
     }
   }
 
-  std::cout << "prices: [";
-  for (const auto &price : prices) {
-    std::cout << price << ", ";
-  }
-  std::cout << "]\n";
+  // std::cout << "prices: [";
+  // for (const auto &price : prices) {
+  //   std::cout << price << ", ";
+  // }
+  // std::cout << "]\n";
   return prices;
 }
 
@@ -50,55 +50,52 @@ std::vector<Price> get_price_candidates(Price best_bid_price,
 solve_unbounded_knapsack(Price total_amount, Quantity total_qty,
                          const std::vector<Price> prices) {
   using Solution = std::vector<Quantity>;
-  using Solutions = std::vector<std::vector<Quantity>>;
+  using Solutions = std::vector<Solution>;
   // we have to use 2D dp so that we can print the items
   // dp[i][j] is the solution of selected items, -1 means no solution.
   // For the first i items, to achieve total value j.
-  std::vector<std::vector<Solutions>> dp(prices.size() + 1);
-
-  for (auto &row : dp) {
-    // initialized with -1, invalid value
-    row.resize(total_amount + 1);
-    // the first value is valid, because a knapsack with 0 capacity is full
-    row[0] = {Solution(prices.size(), 0)};
-  }
+  std::vector<Solutions> dp(total_amount + 1);
+  // the first value is valid, because a knapsack with 0 capacity is full
+  dp[0] = {Solution(prices.size(), 0)};
 
   std::vector<TradeAllocation> result;
-  for (int i = 1; i < dp.size(); ++i) {
-    const auto &px = prices.at(i - 1);
-    for (Price j = px; j < dp[i].size(); ++j) {
+  for (size_t i = 0; i < prices.size(); ++i) {
+    const auto &px = prices.at(i);
+    for (Price j = px; j < dp.size(); ++j) {
       // at least, with the extra ith item, it can have the same solution as
       // the first i-1 items.
-      dp[i][j] = dp[i - 1][j];
+      // dp[i][j] = dp[i - 1][j];
       // the ith item can add another solution
-      for (const auto &prev_solution : dp[i][j - px]) {
-        // deep copy
-        auto solution = prev_solution;
-        // add one ith item
-        solution[i - 1] += 1;
-        dp[i][j].push_back(solution);
+
+      // deep copy here
+      Solutions prev_solutions = dp.at(j - px);
+      for (Solution &solution : prev_solutions) {
+        // add one quantity to ith item
+        solution[i] += 1;
+        dp[j].push_back(solution);
       }
     }
 
-    for (const auto &solution : dp[i][total_amount]) {
+    for (const Solution &solution : dp[total_amount]) {
       if (std::accumulate(solution.begin(), solution.end(), 0) != total_qty) {
         continue;
       }
 
-      for (size_t i = 0; i < solution.size(); ++i) {
-        const auto &qty = solution[i];
+      for (size_t k = 0; k < solution.size(); ++k) {
+        const auto &qty = solution[k];
         if (qty > 0) {
           TradeAllocation allocation;
           allocation.quantity = qty;
-          allocation.price = prices.at(i);
+          allocation.price = prices.at(k);
           result.push_back(allocation);
         }
       }
       // return on finding first solution
       if (result.size() > 0) {
-        std::cout << "Find solution with total amount " << total_amount
-                  << ", total quantity " << total_qty << " with first " << i
-                  << " items,TODO: output solution.\n";
+        // std::cout << "Find solution with total amount " << total_amount
+        //           << ", total quantity " << total_qty << " with first " << i
+        //           + 1
+        //           << " items,TODO: output solution.\n";
         return result;
       }
     }
