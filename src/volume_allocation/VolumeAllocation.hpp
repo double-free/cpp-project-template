@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 namespace algo {
@@ -11,6 +12,8 @@ struct TradeAllocation {
   Price price{0};
   Quantity quantity{0};
 };
+
+std::string serialize(const std::vector<TradeAllocation> &allocations);
 
 std::vector<Price> get_price_candidates(Price best_bid_price,
                                         Price best_ask_price,

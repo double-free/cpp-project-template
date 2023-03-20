@@ -69,3 +69,25 @@ TEST(VolumeAllocationTests, multiple_levels_trade) {
   EXPECT_EQ(101, result[2].price);
   EXPECT_EQ(1, result[2].quantity);
 }
+
+TEST(VolumeAllocationTests, buy_3_levels) {
+  int total_qty = 6;
+  // traded in 3 levels, 100, 98, 101
+  int total_amount = 3 * 98 + 2 * 97 + 96;
+  int best_bid_price = 98;
+  int best_ask_price = 100;
+  int max_levels = 10;
+  auto result = algo::allocate_volume(total_amount, total_qty, best_bid_price,
+                                      best_ask_price, max_levels);
+
+  std::cout << algo::serialize(result) << "\n";
+  ASSERT_EQ(3, result.size());
+  EXPECT_EQ(98, result[0].price);
+  EXPECT_EQ(3, result[0].quantity);
+
+  EXPECT_EQ(97, result[1].price);
+  EXPECT_EQ(2, result[1].quantity);
+
+  EXPECT_EQ(96, result[2].price);
+  EXPECT_EQ(1, result[2].quantity);
+}

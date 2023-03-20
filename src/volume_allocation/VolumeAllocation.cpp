@@ -3,9 +3,20 @@
 #include <algorithm>
 #include <cassert>
 #include <numeric>
+#include <sstream>
 #include <stdexcept>
 
 namespace algo {
+std::string serialize(const std::vector<TradeAllocation> &allocations) {
+  std::stringstream ss;
+  ss << '[';
+  for (const auto &allocation : allocations) {
+    ss << '(' << allocation.price << ", " << allocation.quantity << ')';
+  }
+  ss << ']';
+  return ss.str();
+}
+
 std::vector<Price> get_price_candidates(Price best_bid_price,
                                         Price best_ask_price,
                                         size_t max_levels) {
