@@ -37,8 +37,8 @@ std::vector<Price> get_price_candidates(Price best_bid_price,
     Price better_ask_px = best_ask_price - i;
     Price better_bid_px = best_bid_price + i;
     if (better_ask_px > better_bid_px) {
-      prices.push_back(worse_ask_px);
-      prices.push_back(worse_bid_px);
+      prices.push_back(better_bid_px);
+      prices.push_back(better_ask_px);
     } else if (better_ask_px == better_bid_px) {
       prices.push_back(better_ask_px);
       crossed = true;
