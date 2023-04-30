@@ -146,7 +146,8 @@ allocate_volume(Price total_amount, Quantity total_qty, Price best_bid_price,
       get_price_candidates(best_bid_price, best_ask_price, max_levels);
 
   // we need to use the price offset instead of real price to save space
-  const auto &pivot_price = *std::min_element(prices.begin(), prices.end());
+  // -1 to avoid the 0 price
+  const auto &pivot_price = *std::min_element(prices.begin(), prices.end()) - 1;
   auto offset_prices = prices;
   for (auto &px : offset_prices) {
     px -= pivot_price;
